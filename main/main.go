@@ -1,52 +1,16 @@
 package main
 
-import "fmt"
-
 import (
-	"io/ioutil"
-	"encoding/json"
+	"fmt"
+	"github.com/rusucosmin/goworkshop/importer"
+	"github.com/rusucosmin/goworkshop/web"
 	"github.com/rusucosmin/goworkshop/model"
 )
 
 func main() {
-	fileContent, err := ioutil.ReadFile("model/books.json")
-
-	if err != nil {
-		panic(err)
-	}
-
-	err = json.Unmarshal(fileContent, &model.Books)
-
-	if err != nil {
-		panic(err)
-	}
-
-	serializedData, err := json.Marshal(model.Books)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("The serialized books are:")
-	fmt.Println(string(serializedData))
-
-	fileContent, err = ioutil.ReadFile("model/authors.json")
-
-	if err != nil {
-		panic(err)
-	}
-
-	err = json.Unmarshal(fileContent, &model.Authors)
-
-	if err != nil {
-		panic(err)
-	}
-
-	serializedData, err = json.Marshal(model.Authors)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("The serialized books are:")
-	fmt.Println(string(serializedData))
-
+	model.Authors = importer.ImportAuthors()
+	fmt.Printf("Imported authors are: %s\n", model.Authors)
+	model.Books = importer.ImportBooks()
+	fmt.Printf("Imported books are: %s\n", model.Books)
+	web.StartServer()
 }

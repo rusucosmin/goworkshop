@@ -5,6 +5,15 @@ import (
 )
 
 // AuthorDto will store the information about the authors
+type BookDto struct {
+	UUID        string    `json:"uuid"`
+	Title       string    `json:"title"`
+	NoPages     int       `json:"noPages"`
+	ReleaseDate string    `json:"releaseDate"`
+	Author      AuthorDto `json:"author"`
+}
+
+// AuthorDto - The DTO used to access authors
 type AuthorDto struct {
 	UUID      string `json:"uuid"`
 	FirstName string `json:"firstName"`
@@ -13,24 +22,17 @@ type AuthorDto struct {
 	Death     string `json:"death"`
 }
 
-// BookDto will store the information about the books
-type BookDto struct {
-	UUID        string `json:"uuid"`
-	Title       string `json:"title"`
-	NoPages     int `json:"noPages"`
-	ReleaseDate string `json:"releaseDate"`
-	Author      AuthorDto `json:"author"`
+func (author AuthorDto) String() string {
+	return fmt.Sprintf("AuthorDto{UUID='%s', FirstName='%s', LastName='%s', Birthday='%s', Death='%s'}", author.UUID,
+		author.FirstName, author.LastName, author.Birthday, author.Death)
 }
 
-func (b BookDto) String() string {
-	return fmt.Sprintf("BookDto(UUID=%s, Title=%s, NoPages=%s, ReleaseDate=%s, Author=%s", b.UUID, b.Title,
-		b.NoPages, b.ReleaseDate, b.Author)
+func (book BookDto) String() string {
+	return fmt.Sprintf("BookDto{UUID='%s', Title='%s', NoPages=%d, ReleaseDate='%s',Author=%s}", book.UUID, book.Title, book.NoPages, book.ReleaseDate, book.Author)
 }
 
-func (a AuthorDto) String() string {
-	return fmt.Sprintf("AuthorDto(UUID=%s, FirstName=%s, LastName=%s, Birthday=%s, Death=%s", a.UUID,
-		a.FirstName, a.LastName, a.Birthday, a.Death)
-}
-
+// Books - the list of available books
 var Books []BookDto
+
+// Authors - the list of available authors
 var Authors []AuthorDto
