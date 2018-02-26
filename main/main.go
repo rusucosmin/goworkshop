@@ -2,24 +2,51 @@ package main
 
 import "fmt"
 
-import "github.com/rusucosmin/goworkshop/test"
+import (
+	"io/ioutil"
+	"encoding/json"
+	"github.com/rusucosmin/goworkshop/model"
+)
 
 func main() {
-	var books = make([]BookDto, 8)
-	var authors = make([]AuthorDto, 8)
+	fileContent, err := ioutil.ReadFile("model/books.json")
 
-	fmt.Printf("%d\n", len(books))
-	fmt.Printf("%d\n", len(authors))
-
-	var v = test.Square{
-		Length: 25,
+	if err != nil {
+		panic(err)
 	}
 
-	var rect = test.Rectangle{
-		Square: v,
+	err = json.Unmarshal(fileContent, &model.Books)
+
+	if err != nil {
+		panic(err)
 	}
 
-	fmt.Printf("Length %d\n", rect.Area())
+	serializedData, err := json.Marshal(model.Books)
+	if err != nil {
+		panic(err)
+	}
 
-	fmt.Printf("Length %d\n", v.Length)
+	fmt.Println("The serialized books are:")
+	fmt.Println(string(serializedData))
+
+	fileContent, err = ioutil.ReadFile("model/authors.json")
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = json.Unmarshal(fileContent, &model.Authors)
+
+	if err != nil {
+		panic(err)
+	}
+
+	serializedData, err = json.Marshal(model.Authors)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("The serialized books are:")
+	fmt.Println(string(serializedData))
+
 }
