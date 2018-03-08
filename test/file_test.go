@@ -1,11 +1,11 @@
 package test
 
 import (
-	"testing"
-	"io/ioutil"
-	"github.com/stretchr/testify/assert"
 	"encoding/json"
 	"fmt"
+	"github.com/stretchr/testify/assert"
+	"io/ioutil"
+	"testing"
 )
 
 type person struct {
@@ -26,7 +26,7 @@ func TestReadFile(t *testing.T) {
 	var persons persons
 	assert.NoError(t, json.Unmarshal(fileContent, &persons))
 	fmt.Println(persons)
-	assert.Len(t, persons, 2, )
+	assert.Len(t, persons, 2)
 
 	assert.Equal(t, "John", persons[0].FirstName)
 	assert.Equal(t, "Doe", persons[0].LastName)

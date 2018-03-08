@@ -68,15 +68,59 @@
 1. set the "Content-Type" response header to "application/json"
 1. when /books endpoint is hit, return all books previously loaded from the JSON file
 ### 7. implement all REST endpoints with data loaded from files
-
+1. install github.com/gorilla/mux package using 'go get -u' command
+1. create util.go file in web package and implement a generic function that should write any array of data as JSON to the http.ResponseWriter
+1. create routes.go file
+1. define authorBaseUrl, authorByUuidUrl, booksBaseUrl, bookByUuidUrl constants with proper values
+1. define a Route struct with Method, Pattern, ExpectedCode and HandlerFunc fields
+1. define a Routes struct which should contain an array of Route structs
+1. declare a variable named routes of type Route and define all the routes mappings
+1. create author_handlers.go file in web package
+1. create book_handlers.go file in web package
+1. in each file, create HTTP handlers for:
+ * get all entities
+ * get entity by id
+ * delete entity by id
+ * add new entity
+ * update entity
+11. use mux.Vars(r)["..."] to extract path variables
+12. in webserver.StartServer function, create a Gorilla mux router, register the routes array with the router and then start the http server with the router as handler
 # Part 2 - Add unit tests for all REST endpoints and create the persistence layer
-### 8. write unit tests for all REST endpoints
+### 8. initialize database persistence
+1. use go get to retrieve github.com/jinzhu/gorm package
+1. use go get to retrieve github.com/jinzhu/gorm/dialects/postgres
+1. create persistence package
+1. create config.go file in persistence package
+1. import for side effects github.com/jinzhu/gorm/dialects/postgres
+1. create an InitDB function that uses gorm.Open to open a connection to a PostgreSQL db
+1. gorm.Open should receive the following parameters: dialect, host, port, user, password, dbname, sslmode
+1. on the DBInstance set DB().SetMaxOpenConns, LogMode, SingularTable, AutoMigrate for Book and Author entities, add foreign constraint from Book to Author and add unique constraint on book title
 ### 9. add persistence mappings
+1. delete importer package
+1. remove importer references from main.go
+1. remove importer references from book_handlers.go
+1. remove importer references from author_handlers.go
+1. rename BookDto to Book and AuthroDto to Author
+1. create an Entity struct in datamodel.go file with UUID field
+1. add `gorm:"primary_key"` primary key annotation to the Entity.UUID field
+1. embed Entity struct in Book struct
+1. add `gorm:"ForeignKey:AuthorUUID"` foreign key annotation to the Book.Author field
+1. add `sql:"type:text REFERENCES author(uuid) ON DELETE CASCADE"` cascade delete annotation to the Book.AuthorUUID field
+1. embed Entity struct in the Author struct
 ### 10. add persistence services to retrieve data from db
+1. create datastore.go file in persistence package
+1. create GormDataStore struct with a field named DBInstance of a type representing a pointer to a gorm.DB
+1. create DataStore interface in datastore.go with all books and authors operations
+1. create a Store variable of DataStore type
+1. in persistence/config.go file initialize the store variable before returning the DBInstance
+1. create books_datastore.go file in persistence package
+1. create authors_datastore.go file in persistence package
+1. implement DataStore interface in books_datastore.go and authors_datastore.go files by creating functions with a pointer receiver to a gorm.DB type
 ### 11. switch from loading data from db instead of files
+1. in main.go init the persistence
+1. in web/book_handlers remove Books type and books variable
+1. in web/author_handlers remove Authors type and authors variable
+1. use methods on persistence.Store to work with Book and Author entities
 
-#Part 3 - Add error handling and logging, improve performance with Go routines
-### 12. add error handling
-### 13. add logging support
-### 14. create a configuration service for the application
-### 15. improve performance by handling requests async using Go routines
+#Part 3 - Add error handling and logging
+### 12 write unit tests for All REST endpoints using mocks for all external dependencies
